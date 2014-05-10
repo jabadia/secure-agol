@@ -57,7 +57,7 @@
     };
   </script>
   <script src="//js.arcgis.com/3.9compact/"></script>
-
+  <script src="md5.js"></script>
   <script>
     var grid, signIn;
     require([
@@ -87,12 +87,21 @@
       signIn = function() {
         OAuthHelper.signIn().then(displayItems);
       }
+
+      function getAvatarImage(portalUser)
+      {
+        var hash = md5(portalUser.email.trim().toLowerCase());
+        var img = "http://www.gravatar.com/avatar/" + hash + "?s=20";
+        return img;
+      }
       
       function displayItems() {
         new esriPortal.Portal("https://www.arcgis.com").signIn().then(
           function(portalUser) {
             console.log("Signed in to the portal: ", portalUser);
 
+            var avatar = getAvatarImage(portalUser);
+            domAttr.set("userImage","src", avatar);
             domAttr.set("userId", "innerHTML", portalUser.fullName);
             domStyle.set("anonymousPanel", "display", "none");
             domStyle.set("personalizedPanel", "display", "block");
@@ -157,6 +166,7 @@
     Welcome <span id="userId" style="font-weight: bold;"></span>
     &nbsp;-&nbsp;
     <a href="javascript:void(0);" onclick="OAuthHelper.signOut();">Sign Out</a>
+    <img id="userImage" />
   </div>
   
   <div id="itemGallery" class="esri-item-gallery" style="width: 100%;"></div>
