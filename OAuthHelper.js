@@ -72,7 +72,7 @@ function(lang, dojoJson, Url, cookie, Deferred, ioquery, idManager) {
         window.open(
           authUrl, 
           "esrioauth", 
-          "width=480,height=320,location=yes,status=yes,scrollbars=yes"
+          "width=480,height=600,location=yes,status=yes,scrollbars=yes"
         );
       }
       else {
