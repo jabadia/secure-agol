@@ -1,3 +1,7 @@
+/*global define*/
+define([], function()
+{
+	
 function md5cycle(x, k) {
 var a = x[0], b = x[1], c = x[2], d = x[3];
 
@@ -182,3 +186,10 @@ msw = (x >> 16) + (y >> 16) + (lsw >> 16);
 return (msw << 16) | (lsw & 0xFFFF);
 }
 }
+
+return {
+	md5: md5
+}
+
+// 
+}); // define
