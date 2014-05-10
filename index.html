@@ -133,7 +133,7 @@
       
       function createGallery(items) {
         var htmlFragment = "";
-        
+
         arrayUtils.forEach(items.results, function(item) {
           htmlFragment += (
             "<div class=\"esri-item-container\">" +
@@ -146,6 +146,9 @@
                 item.title ?
                 "<div class=\"esri-title\">" + (item.title || "") + "</div>" :
                 "<div class=\"esri-title esri-null-title\">Title not available</div>"
+              ) +
+              (
+                "<a target='_blank' href='" + item.portal.url + "/home/item.html?id=" + item.id + "'>view</a>"
               ) +
             "</div>"
           );
