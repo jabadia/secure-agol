@@ -141,7 +141,8 @@
         arrayUtils.forEach(items.results, function(item) {
           console.log(item);
           console.log(item.title);
-          var layer = new FeatureLayer(item.url, { mode: FeatureLayer.MODE_SNAPSHOT });
+
+          var layer = new FeatureLayer(item.url + "/0", { mode: FeatureLayer.MODE_SNAPSHOT });
           var query = new Query();
           query.where = "1=1";
           layer.queryCount(query).then(function(count)
@@ -153,21 +154,6 @@
             console.log("ERROR:", item.name, error);
           });
         });
-        /*
-        var url = "http://services2.arcgis.com/CQWCKwrSm5dkM28A/arcgis/rest/services/provincias/FeatureServer";
-        var layer = new FeatureLayer(url, { mode: FeatureLayer.MODE_SNAPSHOT });
-        console.log(layer)
-        var query = new Query();
-        query.where = "1=1";
-        layer.queryCount(query).then(function(count)
-        {
-          console.log("COUNT:", count);
-        }).otherwise(
-        function(error)
-        {
-          console.log("ERROR:", error);
-        });
-*/
       }
 
       function queryPortal(portalUser) {
