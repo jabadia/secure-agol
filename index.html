@@ -46,6 +46,10 @@
     .esri-item-gallery .esri-null-title {
       color: #999999;
     }
+
+    #userImage {
+      width: 30px;
+    }
   </style>
   
   <script>
@@ -93,8 +97,16 @@
 
       function getAvatarImage(portalUser)
       {
-        var hash = md5.md5(portalUser.email.trim().toLowerCase());
-        var img = "http://www.gravatar.com/avatar/" + hash + "?s=20";
+        var img = "";
+        if( portalUser.thumbnailUrl )
+        {
+          img = portalUser.thumbnailUrl + "?token=" + portalUser.credential.token;
+        }
+        else
+        {
+          var hash = md5.md5(portalUser.email.trim().toLowerCase());
+          img = "http://www.gravatar.com/avatar/" + hash + "?s=30";
+        }
         return img;
       }
       
