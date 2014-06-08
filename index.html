@@ -62,6 +62,7 @@
   </script>
   <script src="//js.arcgis.com/3.9compact/"></script>
   <script>
+    var global = global || {} ;
     var grid, signIn;
     require([
       "esri/arcgis/Portal", "app/OAuthHelper", 
@@ -114,6 +115,7 @@
         var portal = new esriPortal.Portal("https://www.arcgis.com");
         portal.signIn().then(
           function(portalUser) {
+            global.portalUser = portalUser;
             console.log("Signed in to the portal: ", portalUser);
 
             var avatar = getAvatarImage(portalUser);
