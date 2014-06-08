@@ -60,12 +60,14 @@
   <script>
     var grid, signIn;
     require([
-      "esri/arcgis/Portal", "app/OAuthHelper",
+      "esri/arcgis/Portal", "app/OAuthHelper", 
+      "esri/layers/FeatureLayer", "esri/tasks/query", "esri/IdentityManager",
       "dojo/dom-style", "dojo/dom-attr", "dojo/dom", "dojo/_base/array", 
       "app/md5",
       "dojo/domReady!"
     ], function(
       esriPortal, OAuthHelper, 
+      FeatureLayer, Query, IdentityManager,
       domStyle, domAttr, dom, arrayUtils,
       md5
     ) { 
@@ -75,7 +77,7 @@
         expiration: (14 * 24 * 60), // 2 weeks, in minutes
         popup:      true
       });
-      
+
       if (OAuthHelper.isSignedIn()) {
         displayItems();
       }
@@ -97,7 +99,8 @@
       }
       
       function displayItems() {
-        new esriPortal.Portal("https://www.arcgis.com").signIn().then(
+        var portal = new esriPortal.Portal("https://www.arcgis.com");
+        portal.signIn().then(
           function(portalUser) {
             console.log("Signed in to the portal: ", portalUser);
 
@@ -108,12 +111,63 @@
             domStyle.set("personalizedPanel", "display", "block");
             
             queryPortal(portalUser);
+            queryFeatureServices(portalUser);
           }
         ).otherwise(
           function(error) {
             console.log("Error occurred while signing in: ", error);
           }
         );
+      }
+
+      function queryFeatureServices(portalUser)
+      {
+        var portal = portalUser.portal;
+        
+        //See list of valid item types here:  http://www.arcgis.com/apidocs/rest/index.html?itemtypes.html
+        //See search reference here:  http://www.arcgis.com/apidocs/rest/index.html?searchreference.html
+        var queryParams = {
+          q:          "owner:" + portalUser.username + " AND type:Feature Service",
+          sortField:  "numViews",
+          sortOrder:  "desc",
+          num:        20
+        };
+
+        portal.queryItems(queryParams).then(openFeatureService);
+      }
+
+      function openFeatureService(items)
+      {
+        arrayUtils.forEach(items.results, function(item) {
+          console.log(item);
+          console.log(item.title);
+          var layer = new FeatureLayer(item.url, { mode: FeatureLayer.MODE_SNAPSHOT });
+          var query = new Query();
+          query.where = "1=1";
+          layer.queryCount(query).then(function(count)
+          {
+            console.log("COUNT:", item.title, count);
+          }).otherwise(
+          function(error)
+          {
+            console.log("ERROR:", item.name, error);
+          });
+        });
+        /*
+        var url = "http://services2.arcgis.com/CQWCKwrSm5dkM28A/arcgis/rest/services/provincias/FeatureServer";
+        var layer = new FeatureLayer(url, { mode: FeatureLayer.MODE_SNAPSHOT });
+        console.log(layer)
+        var query = new Query();
+        query.where = "1=1";
+        layer.queryCount(query).then(function(count)
+        {
+          console.log("COUNT:", count);
+        }).otherwise(
+        function(error)
+        {
+          console.log("ERROR:", error);
+        });
+*/
       }
 
       function queryPortal(portalUser) {
