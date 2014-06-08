@@ -191,6 +191,8 @@ function(lang, dojoJson, Url, cookie, Deferred, ioquery, idManager) {
           helper = this;
       
       idManager.signIn = function(resUrl, serverInfo, options) {
+
+        console.log("overrriden signIn() method");
         
         return (serverInfo.server.indexOf(".arcgis.com") !== -1) ?
                   // OAuth flow
